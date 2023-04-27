@@ -29,33 +29,17 @@ public class IKFootSolver : MonoBehaviour
         lerp = 1;
     }
 
-    
+
     void Update()
     {
         transform.position = currentPosition;
         transform.up = currentNormal;
 
-        Ray ray = new Ray(body.position + (body.right * footSpacing), Vector3.down);
+        SetNewFootPosition();
 
-        if (Physics.Raycast(ray, out RaycastHit info, 10, terrainLayer.value))
+        if (IsLegLifted())
         {
-            if (Vector3.Distance(newPosition, info.point) > stepDistance && !otherFoot.IsMoving() && lerp >= 1)
-            {
-                lerp = 0;
-                int direction = body.InverseTransformPoint(info.point).z > body.InverseTransformPoint(newPosition).z ? 1 : -1;
-                newPosition = info.point + (stepLength *  direction * body.forward) + footOffset;
-                newNormal = info.normal;
-            }
-        }
-
-        if (IsMoving())
-        {
-            Vector3 tempPosition = Vector3.Lerp(oldPosition, newPosition, lerp);
-            tempPosition.y += Mathf.Sin(lerp * Mathf.PI) * stepHeight;
-
-            currentPosition = tempPosition;
-            currentNormal = Vector3.Lerp(oldNormal, newNormal, lerp);
-            lerp += Time.deltaTime * speed;
+            PerformLegLift();
         }
         else
         {
@@ -64,20 +48,39 @@ public class IKFootSolver : MonoBehaviour
         }
     }
 
+    private void SetNewFootPosition()
+    {
+        var ray = new Ray(body.position + (body.right * footSpacing), Vector3.down);
+        if (!Physics.Raycast(ray, out var info, 10, terrainLayer.value)) return;
+        if (Vector3.Distance(newPosition, info.point) <= stepDistance || otherFoot.IsLegLifted() ||
+            IsLegLifted()) return;
+        lerp = 0;
+        var directionZ = body.InverseTransformPoint(info.point).z > body.InverseTransformPoint(newPosition).z
+            ? 1
+            : -1;
+        newPosition = info.point + (stepLength * directionZ * body.forward) + footOffset;
+        newNormal = info.normal;
+    }
+
+    private void PerformLegLift()
+    {
+        Vector3 tempPosition = Vector3.Lerp(oldPosition, newPosition, lerp);
+        tempPosition.y += Mathf.Sin(lerp * Mathf.PI) * stepHeight;
+
+        currentPosition = tempPosition;
+        currentNormal = Vector3.Lerp(oldNormal, newNormal, lerp);
+        lerp += Time.deltaTime * speed;
+    }
+
     private void OnDrawGizmos()
     {
-
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(newPosition, 0.5f);
     }
 
 
-
-    public bool IsMoving()
+    public bool IsLegLifted()
     {
         return lerp < 1;
     }
-
-
-
 }
