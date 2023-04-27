@@ -566,7 +566,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 36da86b8393ac6641ba6b8318340a9fd, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 36da86b8393ac6641ba6b8318340a9fd, type: 3}
       propertyPath: m_Controller
@@ -5791,7 +5791,7 @@ MonoBehaviour:
   body: {fileID: 916327002}
   otherFoot: {fileID: 2087787256}
   speed: 2
-  stepDistance: 1
+  stepDistance: 1.5
   stepLength: 1
   stepHeight: 1
   footOffset: {x: 0, y: 0, z: 0}
@@ -7202,7 +7202,7 @@ MonoBehaviour:
   body: {fileID: 916327002}
   otherFoot: {fileID: 1841470425}
   speed: 2
-  stepDistance: 1
+  stepDistance: 1.5
   stepLength: 1
   stepHeight: 1
   footOffset: {x: 0, y: 0, z: 0}
